@@ -1,0 +1,71 @@
+โจทย์หัดทำครับ
+1.  SELECT * FROM recordList WHERE when BETWEEN from AND to;
+          Record(when: DateTime, user: String)
+          def selectWhere(recordList: List[Record], from: DateTime, to: DateTime): List[Record]
+          
+2. SELECT user, count(*) FROM recordList WHERE when BETWEEN from AND to GROUP BY user;
+          Record(when: DateTime, user: String)
+          TotalUsageSummary(user: String, freq: Long)
+          def selectWhere(recordList: List[Record], from: DateTime, to: DateTime): List[TotalUsageSummary]
+
+3. SELECT user, CAST(CONCAT(YEAR(when), '-', MONTH(when), '-', DATE(when), ' ', HOUR(when))) AS DATE) AS time, count(*)
+   FROM recordList WHERE when BETWEEN from AND to
+   GROUP BY user, CONCAT(YEAR(when), '-', MONTH(when), '-', DATE(when), ' ', HOUR(when));
+          Record(when: DateTime, user: String)
+          HourUsageSummary(user: String, freq: Long)
+          def selectWhere(recordList: List[Record], from: DateTime, to: DateTime): List[UserHourUsageSummary]
+
+ไม่เข้าใจถามผมได้ตลอดครับ
+
+
+def parseLogLine(line: String) : Option[LogDataItem]​
+
+​
+
+lines​
+
+  .withFilter( line => line.trim.length > 70)​
+
+  .map(parseLogLine)​
+
+  .filter( item => item.nonEmpty && (who == null || item.get.who == who) )​
+
+  .flatten​
+
+  .toList​
+
+  .groupBy( x => (x.who, x.when.plusMillis(0-x.when.getMillisOfSecond())) )​
+
+  .toList.map{ case (k,v) => v.reduce((a,b) => LogDataItem(k._2, k._1, a.freq+b.freq)) }
+
+
+***********************
+SELECT a, b​
+
+FROM tableX​
+
+WHERE c > 0
+***********************
+tableX​
+
+  .withFilter( _.c > 0)​
+
+  .map( row => (row.a, row.b)
+**************************
+
+**************************
+SELECT a, sum(b)​
+
+FROM tableX​
+
+WHERE c > 0​
+
+GROUP BY a
+**************************
+tableX​
+
+  .filter(_.c >0)​
+
+  .groupBy(_.a)​
+
+  .map( (k,v) => (k, v.map(row=> row.b).sum) )
